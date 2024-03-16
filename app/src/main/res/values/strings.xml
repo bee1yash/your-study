@@ -3,4 +3,5 @@
     <string name="your_study">Your Study</string>
     <string name="enter_text">Вхід</string>
     <string name="register_link">Зареєструватись</string>
+    <string name="login_text">Увійти</string>
 </resources>
