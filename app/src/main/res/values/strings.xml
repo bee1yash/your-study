@@ -4,4 +4,7 @@
     <string name="enter_text">Вхід</string>
     <string name="register_link">Зареєструватись</string>
     <string name="login_text">Увійти</string>
+    <string name="registration">Реєстрація</string>
+    <string name="registrate">Зареєструватись</string>
+    <string name="login_link">Увійти</string>
 </resources>

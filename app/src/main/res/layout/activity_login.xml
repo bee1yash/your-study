@@ -85,23 +85,27 @@
         app:layout_constraintTop_toTopOf="@id/imageView1"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/appCompatButton"
+    <TextView
+        android:id="@+id/logintext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="283dp"
-        android:background="@drawable/transparent_button_background"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/register_link"
-        android:textAlignment="center"
+        android:layout_marginTop="312dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/registrate"
         android:textColor="#3F5DFF"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView1" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </ProgressBar>
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -116,7 +120,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView1" />
 
     <TextView
-        android:id="@+id/logintext"
+        android:id="@+id/log_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
