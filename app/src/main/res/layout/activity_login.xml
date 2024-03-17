@@ -86,10 +86,10 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/logintext"
+        android:id="@+id/regNow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="312dp"
+        android:layout_marginTop="300dp"
         android:fontFamily="sans-serif"
         android:text="@string/registrate"
         android:textColor="#3F5DFF"
@@ -108,7 +108,7 @@
     </ProgressBar>
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/log_btn"
         android:layout_width="218dp"
         android:layout_height="42dp"
         android:layout_gravity="center_horizontal"
@@ -120,7 +120,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView1" />
 
     <TextView
-        android:id="@+id/log_btn"
+        android:id="@+id/log_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
@@ -128,10 +128,10 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-        app:layout_constraintEnd_toEndOf="@+id/imageButton"
-        app:layout_constraintStart_toStartOf="@+id/imageButton"
-        app:layout_constraintTop_toTopOf="@+id/imageButton" />
+        app:layout_constraintBottom_toBottomOf="@+id/log_btn"
+        app:layout_constraintEnd_toEndOf="@+id/log_btn"
+        app:layout_constraintStart_toStartOf="@+id/log_btn"
+        app:layout_constraintTop_toTopOf="@+id/log_btn" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

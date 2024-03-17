@@ -90,7 +90,7 @@
         android:id="@+id/loginNow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="312dp"
+        android:layout_marginTop="300dp"
         android:background="@drawable/transparent_button_background"
         android:fontFamily="sans-serif-medium"
         android:text="@string/login_link"
