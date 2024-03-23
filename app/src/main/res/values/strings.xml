@@ -16,4 +16,7 @@
     <string name="title_search">Search</string>
     <string name="title_profile">Profile</string>
     <string name="title_test">Test</string>
+    <string name="title_info">Info</string>
+    <string name="title_progress">Progress</string>
+    <string name="title_materials">Materials</string>
 </resources>

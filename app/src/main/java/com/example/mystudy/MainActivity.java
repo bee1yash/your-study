@@ -1,7 +1,5 @@
 package com.example.mystudy;
 
-import android.app.Activity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,20 +8,15 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 
-import com.example.mystudy.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
+    com.example.mystudy.databinding.ActivityMainBinding binding;
     FirebaseAuth auth;
     Button button;
     TextView textView;
@@ -31,18 +24,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = com.example.mystudy.databinding.ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.home) {
+            if (item.getItemId() == R.id.schedule) {
                 replaceFragment(new HomeFragment());
-            } else if (item.getItemId() == R.id.schedule) {
+            } else if (item.getItemId() == R.id.progress) {
                 replaceFragment(new ScheduleFragment());
-            } else if (item.getItemId() == R.id.profile) {
+            } else if (item.getItemId() == R.id.materials) {
                 replaceFragment(new ProfileFragment());
-            } else if (item.getItemId() == R.id.test) {
+            } else if (item.getItemId() == R.id.profile) {
                 replaceFragment(new TestFragment());
             }
 
@@ -50,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
         auth = FirebaseAuth.getInstance();
-        button = findViewById(R.id.logout);
-        textView = findViewById(R.id.user_details);
+
         user = auth.getCurrentUser();
 
         if (user == null)
@@ -60,18 +52,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        else{
-            textView.setText(user.getEmail());
-        }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
     }
     private void replaceFragment(Fragment fragment) {
