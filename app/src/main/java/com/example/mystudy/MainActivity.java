@@ -2,7 +2,6 @@ package com.example.mystudy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
@@ -33,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new HomeFragment());
             } else if (item.getItemId() == R.id.progress) {
                 replaceFragment(new ScheduleFragment());
-            } else if (item.getItemId() == R.id.materials) {
-                replaceFragment(new ProfileFragment());
             } else if (item.getItemId() == R.id.profile) {
-                replaceFragment(new TestFragment());
+                replaceFragment(new ProfileFragment());
+            } else if (item.getItemId() == R.id.materials) {
+                replaceFragment(new MaterialsFragment());
             }
 
             return true;

@@ -1,5 +1,6 @@
 package com.example.mystudy;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,16 +11,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class ProfileFragment extends Fragment {
 
@@ -33,11 +43,18 @@ public class ProfileFragment extends Fragment {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
+    private EditText userSurnameEditText;
+    private Button applyGroupButton;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        view = inflater.inflate(R.layout.fragment_profile, container, false);
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
         profileImageView = view.findViewById(R.id.profile_picture);
         userEmailTextView = view.findViewById(R.id.user_email);
         userInfoTextView = view.findViewById(R.id.user_info);
@@ -48,7 +65,7 @@ public class ProfileFragment extends Fragment {
         if (currentUser != null) {
             String userEmail = currentUser.getEmail();
             userEmailTextView.setText(userEmail);
-            EditText userSurnameEditText = view.findViewById(R.id.user_surname);
+            userSurnameEditText = view.findViewById(R.id.user_surname);
             String userSurname = userSurnameEditText.getText().toString().trim();
             if (!userSurname.isEmpty() && surnameToValueMap.containsKey(userSurname)) {
                 int userValue = surnameToValueMap.get(userSurname);
@@ -69,42 +86,40 @@ public class ProfileFragment extends Fragment {
                     openFileChooser();
                 }
             });
-            Button applyGroupButton = view.findViewById(R.id.apply_group_btn);
-            applyGroupButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String userSurname = userSurnameEditText.getText().toString().trim();
-                    if (!userSurname.isEmpty() && surnameToValueMap.containsKey(userSurname)) {
-                        int userValue = surnameToValueMap.get(userSurname);
-                        String userGroup = "User Group: " + userValue;
-                        userGroupTextView.setText(userGroup);
-                    } else {
-
-                        String userGroup = "User Group: Невизначено";
-                        userGroupTextView.setText(userGroup);
-                    }
-                }
-            });
-
-            // Logout Button
-            Button logoutButton = view.findViewById(R.id.logout_btn);
-            logoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Perform logout
-                    FirebaseAuth.getInstance().signOut();
-
-                    // Redirect to login screen
-                    Intent intent = new Intent(getActivity(), Login.class);
-                    startActivity(intent);
-                    getActivity().finish(); // Close the current activity (profile)
-                }
-            });
         } else {
             Intent intent = new Intent(getActivity(), Login.class);
             startActivity(intent);
             getActivity().finish();
         }
+
+        applyGroupButton = view.findViewById(R.id.apply_group_btn);
+        applyGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userSurname = userSurnameEditText.getText().toString().trim();
+                if (!userSurname.isEmpty() && surnameToValueMap.containsKey(userSurname)) {
+                    int userValue = surnameToValueMap.get(userSurname);
+                    String userGroup = "User Group: " + userValue;
+                    userGroupTextView.setText(userGroup);
+                } else {
+                    String userGroup = "User Group: Невизначено";
+                    userGroupTextView.setText(userGroup);
+                }
+            }
+        });
+
+        Button logoutButton = view.findViewById(R.id.logout_btn);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+
+                Intent intent = new Intent(getActivity(), Login.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
         return view;
     }
 
@@ -122,11 +137,49 @@ public class ProfileFragment extends Fragment {
             imageUri = data.getData();
             try {
                 profileImageView.setImageURI(imageUri);
+                uploadPicture();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+    private void uploadPicture() {
+        if (imageUri != null) {
+            final ProgressDialog pd = new ProgressDialog(requireContext());
+            pd.setTitle("Uploading Image...");
+            pd.setCancelable(false);
+            pd.show();
+
+            final String randomKey = UUID.randomUUID().toString();
+            StorageReference riversRef = storageRef.child(randomKey);
+
+            UploadTask uploadTask = riversRef.putFile(imageUri);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    pd.dismiss();
+                    Snackbar.make(requireView(), "Image Uploaded.", Snackbar.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    Toast.makeText(requireContext(), "Failed to Upload: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = (100.00 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                    pd.setMessage("Percentage: " + (int) progressPercent + "%");
+                }
+            });
+        } else {
+            Toast.makeText(requireContext(), "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void initSurnameToValueMap
     () {
         surnameToValueMap = new HashMap<>();
@@ -180,7 +233,7 @@ public class ProfileFragment extends Fragment {
         surnameToValueMap.put("Minhazov", 3);
         surnameToValueMap.put("Nyshchyi", 3);
         surnameToValueMap.put("Polyak", 3);
-        surnameToValueMap.put("Ponepolyak", 3);
+        surnameToValueMap.put("Ponepoliak", 3);
         surnameToValueMap.put("Pop", 3);
         surnameToValueMap.put("Popenko", 3);
         surnameToValueMap.put("Popovych", 3);
